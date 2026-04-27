@@ -1,0 +1,7 @@
+streamlit
+agno
+crawl4ai
+email-validator
+python-dotenv
+openai
+ddgs

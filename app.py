@@ -4,16 +4,18 @@ import numpy as np
 from dotenv import load_dotenv
 load_dotenv()
 from agents import crawler_agent, search_agent
-from functions import run
+from functions import run, require_auth
 
-st.set_page_config(page_title="Contact Automation", page_icon="⚡", layout="wide")  # moved up + wide
+require_auth()
+
+st.set_page_config(page_title="Contact Automation", page_icon=":material/schema:", layout="wide")  # moved up + wide
 
 st.title("Contact Automation")
 prompt = st.text_input("Market Query", value="Youth travel sports programs in Cleveland Ohio")
 
 col1, col2 = st.columns(2)
 runs = col1.slider("Runs", 1, 10, 5)
-target = col2.slider("Target Contacts", 1, 10, 5)
+target = col2.slider("Target Contacts", 1, 5, 3)
 
 submit = st.button("Run")
 
@@ -37,4 +39,4 @@ if submit:
         c2.metric("Runs Completed", attempts)
         c3.metric("Target Hit", "✅" if len(collected) >= target else "❌")
 
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width='stretch')

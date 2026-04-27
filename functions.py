@@ -2,6 +2,7 @@ import json
 import re
 from agents import crawler_agent, search_agent
 from email_validator import validate_email, EmailNotValidError
+import streamlit as st
 
 
 def parse_json(text: str):
@@ -61,3 +62,22 @@ def run(market: str):
     return verified
 
 
+def require_auth():
+    if st.session_state.get("authenticated"):
+        return
+    USERS = st.secrets["users"]
+    if st.session_state.get("attempts", 0) >= 5:
+        st.error("Too many attempts.")
+        st.stop()
+    st.title("🔒 Login")
+    username = st.text_input("Username")
+    pwd = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if USERS.get(username) == pwd and pwd:
+            st.session_state.authenticated = True
+            st.session_state.username = username
+            st.rerun()
+        else:
+            st.session_state.attempts = st.session_state.get("attempts", 0) + 1
+            st.error(f"Incorrect credentials ({5 - st.session_state.attempts} attempts left)")
+    st.stop()
